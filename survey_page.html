@@ -164,8 +164,8 @@ if(preRating>=1&&preRating<=5){
 function doSubmit(){
   if(!cur)return;
   const payload={custNo,name,date,gender,visits,company,star:cur,starLabel:LABELS[cur],comment:document.getElementById('comment').value.trim(),submittedAt:new Date().toLocaleString('ja-JP'),source:preRating?'email_oneclick':'page'};
-  const GAS_URL='YOUR_GAS_WEBAPP_URL_HERE'; // ★GAS公開後に書き換え
-  if(GAS_URL!=='YOUR_GAS_WEBAPP_URL_HERE'){fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});}
+  const GAS_URL='https://script.google.com/macros/s/AKfycbxBU7QHjFiy66BjQKXwwCSoOsZs3bDjOtk6AVyvX0EGDoMeUwhMNdDvZdl5Or0KrkcA/exec'; // ★GAS公開後に書き換え
+  if(GAS_URL!=='https://script.google.com/macros/s/AKfycbxBU7QHjFiy66BjQKXwwCSoOsZs3bDjOtk6AVyvX0EGDoMeUwhMNdDvZdl5Or0KrkcA/exec'){fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});}
   document.getElementById('survey-card').style.display='none';
   const d=document.getElementById('done-card');d.classList.add('show');
   document.getElementById('done-stars').textContent='★'.repeat(cur)+'☆'.repeat(5-cur);
