@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>施術後アンケート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--teal:#0d6e56;--teal-mid:#4a9a82;--teal-light:#e6f4f0;--ink:#1c1f26;--muted:#6b7280;--faint:#9ca3af;--bg:#f5f3ef;--white:#ffffff;--border:#e0dbd2;--star-on:#f0a500;--star-off:#ddd8d0;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;}
+  .header{background:var(--teal);}
+  .header-inner{max-width:560px;margin:0 auto;padding:28px 24px 36px;}
+  .clinic-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.15);border-radius:100px;padding:5px 14px 5px 10px;margin-bottom:18px;}
+  .clinic-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.8);}
+  .clinic-badge-name{font-size:12px;color:rgba(255,255,255,0.9);}
+  .header-title{font-family:'Noto Serif JP',serif;font-size:22px;font-weight:700;color:white;line-height:1.55;}
+  .header-sub{font-size:13px;color:rgba(255,255,255,0.75);margin-top:8px;line-height:1.6;}
+  .main{max-width:560px;width:100%;margin:-20px auto 0;padding:0 16px 60px;flex:1;}
+  .card{background:var(--white);border-radius:16px;box-shadow:0 4px 24px rgba(28,31,38,0.08);overflow:hidden;margin-bottom:14px;}
+  .session-row{padding:18px 22px;border-bottom:1px solid var(--border);}
+  .session-tag{font-size:10px;font-weight:500;letter-spacing:.12em;color:var(--teal);text-transform:uppercase;margin-bottom:8px;}
+  .session-pills{display:flex;flex-wrap:wrap;gap:6px;}
+  .pill{background:var(--teal-light);border-radius:100px;padding:4px 12px;font-size:12px;color:var(--teal);font-weight:500;display:flex;align-items:center;gap:5px;}
+  .pill-dot{width:5px;height:5px;border-radius:50%;background:var(--teal-mid);}
+  .rating-section{padding:28px 22px 16px;}
+  .rating-label{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:22px;text-align:center;}
+  .stars-wrap{display:flex;justify-content:center;gap:10px;margin-bottom:10px;}
+  .star-btn{width:52px;height:52px;border:none;background:none;cursor:pointer;padding:0;transition:transform .15s;}
+  .star-btn:hover{transform:scale(1.12);}
+  .star-btn svg{width:100%;height:100%;}
+  .star-svg-path{fill:var(--star-off);transition:fill .15s;}
+  .star-btn.lit .star-svg-path,.star-btn.hov .star-svg-path{fill:var(--star-on);}
+  .star-row-labels{display:flex;justify-content:space-between;padding:0 4px;margin-bottom:16px;}
+  .star-row-labels span{font-size:10px;color:var(--faint);flex:1;text-align:center;}
+  .sel-label{text-align:center;font-size:14px;font-weight:500;min-height:20px;transition:opacity .2s;opacity:0;margin-bottom:8px;}
+  .sel-label.show{opacity:1;}
+  .comment-section{padding:0 22px 24px;border-top:1px solid var(--border);}
+  .comment-label{font-size:12px;font-weight:500;color:var(--muted);margin:18px 0 10px;}
+  textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);padding:12px 14px;font-family:'Noto Sans JP',sans-serif;font-size:14px;color:var(--ink);resize:vertical;min-height:72px;outline:none;transition:border-color .15s,background .15s;}
+  textarea:focus{border-color:var(--teal);background:white;}
+  textarea::placeholder{color:var(--faint);}
+  .submit-wrap{padding:0 22px 24px;}
+  .submit-btn{width:100%;padding:16px;background:var(--teal);color:white;border:none;border-radius:12px;font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;cursor:pointer;transition:background .2s,transform .1s,opacity .2s;}
+  .submit-btn:hover:not(:disabled){background:#0a5944;transform:translateY(-1px);}
+  .submit-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+  .done-card{display:none;padding:44px 22px;text-align:center;}
+  .done-card.show{display:block;}
+  .done-icon{width:72px;height:72px;border-radius:50%;background:var(--teal-light);margin:0 auto 18px;display:flex;align-items:center;justify-content:center;}
+  .done-icon svg{width:32px;height:32px;}
+  .done-stars{font-size:28px;letter-spacing:4px;margin-bottom:12px;}
+  .done-title{font-family:'Noto Serif JP',serif;font-size:19px;font-weight:700;color:var(--ink);margin-bottom:12px;}
+  .done-text{font-size:13px;color:var(--muted);line-height:1.9;}
+  .footer{text-align:center;font-size:11px;color:var(--faint);line-height:1.9;padding:0 16px 32px;max-width:560px;margin:0 auto;}
+  @keyframes star-pop{0%{transform:scale(1)}40%{transform:scale(1.3)}100%{transform:scale(1)}}
+  .star-btn.presel{animation:star-pop .45s ease .15s;}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-inner">
+    <div class="clinic-badge">
+      <div class="clinic-dot"></div>
+      <span class="clinic-badge-name" id="h-clinic">Well Body株式会社</span>
+    </div>
+    <div class="header-title">先日はご来院いただき<br>ありがとうございました</div>
+    <div class="header-sub"><span id="h-name">お客様</span>の施術後のご状態はいかがでしょうか？</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="card" id="survey-card">
+    <!-- CSVの列: 顧客名・最終予約日・利用回数・性別 を反映 -->
+    <div class="session-row">
+      <div class="session-tag">ご来院情報</div>
+      <div class="session-pills">
+        <div class="pill"><div class="pill-dot"></div><span id="p-date">—</span></div>
+        <div class="pill" id="pill-visits" style="display:none"><div class="pill-dot"></div><span id="p-visits"></span></div>
+        <div class="pill" id="pill-gender" style="display:none"><div class="pill-dot"></div><span id="p-gender"></span></div>
+      </div>
+    </div>
+    <div class="rating-section">
+      <div class="rating-label">今回の施術全体の満足度をお聞かせください</div>
+      <div class="stars-wrap" id="stars-wrap"></div>
+      <div class="star-row-labels">
+        <span>非常に不満</span><span></span><span>普通</span><span></span><span>非常に良い</span>
+      </div>
+      <div class="sel-label" id="sel-label"></div>
+    </div>
+    <div class="comment-section">
+      <div class="comment-label">ご意見・ご感想（任意）</div>
+      <textarea id="comment" placeholder="良かった点、改善点など、自由にお書きください…"></textarea>
+    </div>
+    <div class="submit-wrap">
+      <button class="submit-btn" id="submit-btn" onclick="doSubmit()" disabled>回答を送信する</button>
+    </div>
+  </div>
+
+  <div class="card done-card" id="done-card">
+    <div class="done-icon">
+      <svg viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="15" stroke="#0d6e56" stroke-width="1.5"/>
+        <path d="M9 16.5l5 5 9-9" stroke="#0d6e56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="done-stars" id="done-stars"></div>
+    <div class="done-title">ご回答ありがとうございました</div>
+    <div class="done-text">貴重なご意見をお寄せいただきありがとうございます。<br>皆様のご意見を次回の施術に活かしてまいります。<br><br>またのご来院をお待ちしております。</div>
+  </div>
+
+  <div class="footer"><span id="f-clinic">Well Body株式会社</span><br>このページはアンケート収集専用です。ご不明な点はスタッフまでお問い合わせください。</div>
+</div>
+
+<script>
+// URLパラメータ ＝ CSVの列に対応
+// 顧客番号=custNo / 顧客名=name / 最終予約日=date
+// 性別=gender / 利用回数=visits / 会社名=company
+const P=new URLSearchParams(location.search);
+const clinic    = P.get('clinic')  || 'Well Body株式会社';
+const custNo    = P.get('custNo')  || '';  // 顧客番号
+const name      = P.get('name')    || '';  // 顧客名
+const date      = P.get('date')    || '';  // 最終予約日
+const gender    = P.get('gender')  || '';  // 性別
+const visits    = P.get('visits')  || '';  // 利用回数
+const company   = P.get('company') || '';  // 会社名
+const preRating = parseInt(P.get('rating') || '0');
+
+document.getElementById('h-clinic').textContent = clinic;
+document.getElementById('f-clinic').textContent = clinic;
+if(name) document.getElementById('h-name').textContent = name + '様';
+document.getElementById('p-date').textContent = date ? '最終予約日: ' + date : '—';
+if(visits){ document.getElementById('p-visits').textContent='利用回数: '+visits+'回'; document.getElementById('pill-visits').style.display='flex'; }
+if(gender){ document.getElementById('p-gender').textContent=gender; document.getElementById('pill-gender').style.display='flex'; }
+
+const LABELS=['','非常に不満','不満','普通','良い','非常に良い'];
+const COLORS=['','#e53e3e','#ed8936','#ecc94b','#48bb78','#38a169'];
+let cur=0;
+const wrap=document.getElementById('stars-wrap');
+
+for(let i=1;i<=5;i++){
+  const b=document.createElement('button');
+  b.className='star-btn';b.id='s'+i;b.setAttribute('aria-label',LABELS[i]);
+  b.innerHTML=`<svg viewBox="0 0 52 52"><path class="star-svg-path" d="M26 4l5.8 11.8L45 17.6l-9.5 9.3 2.2 13.1L26 34l-11.7 6 2.2-13.1L7 17.6l13.2-1.8z"/></svg>`;
+  b.onclick=()=>selectStar(i);
+  b.onmouseenter=()=>{for(let j=1;j<=5;j++)document.getElementById('s'+j).classList.toggle('hov',j<=i&&j>cur);};
+  b.onmouseleave=()=>document.querySelectorAll('.star-btn').forEach(x=>x.classList.remove('hov'));
+  wrap.appendChild(b);
+}
+
+function selectStar(n){
+  cur=n;
+  for(let i=1;i<=5;i++)document.getElementById('s'+i).classList.toggle('lit',i<=n);
+  const el=document.getElementById('sel-label');
+  el.textContent=LABELS[n];el.style.color=COLORS[n];el.classList.add('show');
+  document.getElementById('submit-btn').disabled=false;
+}
+
+if(preRating>=1&&preRating<=5){
+  selectStar(preRating);
+  setTimeout(()=>{const b=document.getElementById('s'+preRating);b.classList.add('presel');b.addEventListener('animationend',()=>b.classList.remove('presel'),{once:true});},100);
+}
+
+function doSubmit(){
+  if(!cur)return;
+  const payload={custNo,name,date,gender,visits,company,star:cur,starLabel:LABELS[cur],comment:document.getElementById('comment').value.trim(),submittedAt:new Date().toLocaleString('ja-JP'),source:preRating?'email_oneclick':'page'};
+  const GAS_URL='YOUR_GAS_WEBAPP_URL_HERE'; // ★GAS公開後に書き換え
+  if(GAS_URL!=='YOUR_GAS_WEBAPP_URL_HERE'){fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});}
+  document.getElementById('survey-card').style.display='none';
+  const d=document.getElementById('done-card');d.classList.add('show');
+  document.getElementById('done-stars').textContent='★'.repeat(cur)+'☆'.repeat(5-cur);
+  document.getElementById('done-stars').style.color=COLORS[cur];
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
